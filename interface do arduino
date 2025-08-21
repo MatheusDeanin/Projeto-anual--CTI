@@ -1,0 +1,115 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// Inicializa LCD I2C no endereço 0x27 e tamanho 16x2
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+// Pinos dos botões
+const int btnJogar = 2;
+const int btnIntro = 3;
+const int btnHistoria = 4;
+const int btnSair = 5;
+
+void setup() {
+  // Inicialização do LCD
+  lcd.init();
+  lcd.backlight();
+
+  // Configura pinos dos botões
+  pinMode(btnJogar, INPUT_PULLUP);
+  pinMode(btnIntro, INPUT_PULLUP);
+  pinMode(btnHistoria, INPUT_PULLUP);
+  pinMode(btnSair, INPUT_PULLUP);
+
+  // Exibe menu inicial
+  mostrarMenu();
+}
+
+void loop() {
+  if (digitalRead(btnJogar) == LOW) {
+    iniciarJogo();
+    esperarBotaoSoltar();
+    mostrarMenu();
+  }
+
+  if (digitalRead(btnIntro) == LOW) {
+    mostrarIntroducao();
+    esperarBotaoSoltar();
+    mostrarMenu();
+  }
+
+  if (digitalRead(btnHistoria) == LOW) {
+    mostrarHistoria();
+    esperarBotaoSoltar();
+    mostrarMenu();
+  }
+
+  if (digitalRead(btnSair) == LOW) {
+    sairPrograma();
+  }
+}
+
+void mostrarMenu() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("SENHAS COM");
+  lcd.setCursor(0, 1);
+  lcd.print("SIST. DE ENIGMAS");
+  delay(2000);
+  
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("1:Jogar 2:Intro");
+  lcd.setCursor(0, 1);
+  lcd.print("3:Hist  4:Sair");
+}
+
+void iniciarJogo() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Iniciando jogo...");
+  delay(2000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Morse: .- -...");
+  lcd.setCursor(0, 1);
+  lcd.print("Decifre o codigo");
+  delay(4000);
+}
+
+void mostrarIntroducao() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Regras do jogo:");
+  lcd.setCursor(0, 1);
+  lcd.print("Use cod. Morse");
+  delay(3000);
+}
+
+void mostrarHistoria() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Ha muito tempo...");
+  delay(2000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("msg secretas");
+  lcd.setCursor(0, 1);
+  lcd.print("protegiam reinos");
+  delay(3000);
+}
+
+void sairPrograma() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Saindo...");
+  lcd.setCursor(0, 1);
+  lcd.print("Ate logo!");
+  delay(3000);
+  while (true);  // trava o programa
+}
+
+void esperarBotaoSoltar() {
+  while (digitalRead(btnJogar) == LOW || digitalRead(btnIntro) == LOW || digitalRead(btnHistoria) == LOW || digitalRead(btnSair) == LOW);
+  delay(300); // debounce
+}
